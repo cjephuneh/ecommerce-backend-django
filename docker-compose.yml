@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # command: gunicorn proxima_web_engine.wsgi:application --bind 0.0.0.0:8000
+    command: python3 manage.py runserver 0.0.0.0:8000
+    # volumes:
+    #   - static_volume:/home/app/web/staticfiles
+    #   - media_volume:/home/app/web/mediafiles
+    # expose:
+    #   - 8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - web_engine_db
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.django.rule=Host(`0.0.0.0:8000`)"
+    #   - "traefik.http.routers.django.tls=false"
+    #   # - "traefik.http.routers.django.tls.certresolver=letsencrypt"
+
+    networks:
+       - traefik_proxy
+
+  web_engine_db:
+    image: postgres:15.0-alpine
+    # volumes:
+      # - "./postgres/postgres.conf:/usr/local/etc/postgres/postgres.conf"
+    # command: "postgres -c config_file=/usr/local/etc/postgres/postgres.conf"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=giverwebenginedb
+      - PGPASSWORD=admin
+    ports:
+      - 5432:5432
+    networks:
+       - traefik_proxy
+networks:
+  traefik_proxy:
+    external: true
+   
+
+volumes:
+  # postgres_data:
+  static_volume:
+  media_volume:
+#
