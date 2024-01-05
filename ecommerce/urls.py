@@ -27,7 +27,7 @@ urlpatterns = [
     path('__debug__/', include(debug_toolbar.urls)),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
-    path('', include('mpesa_payment.urls')),
+    # path('', include('mpesa_intergration.urls')),
 
 ]
 
